@@ -26,6 +26,11 @@ type: custom:octopus-intelligent-wheel-card
 entity: sensor.octopus_go_charger
 name: "Octopus Go Charging"
 
+# For Octopus dispatches entity
+type: custom:octopus-intelligent-wheel-card
+entity: sensor.octopus_dispatches
+name: "Octopus Dispatches"
+
 # Multiple cards for different chargers
 type: custom:octopus-intelligent-wheel-card
 entity: sensor.main_ev_charger

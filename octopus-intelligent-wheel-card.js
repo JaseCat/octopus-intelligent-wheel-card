@@ -88,6 +88,11 @@ class OctopusIntelligentWheelCard extends HTMLElement {
       'charge_slots',
       'intelligent_slots',
       'scheduled_slots',
+      // Octopus dispatches format
+      'dispatches',
+      'upcoming_dispatches',
+      'scheduled_dispatches',
+      'next_dispatch',
       // OHME specific attributes
       'slots',
       'charge_schedule',
@@ -105,15 +110,21 @@ class OctopusIntelligentWheelCard extends HTMLElement {
     ];
 
     // Debug: Log all attributes to see what's available
-    console.log('OHME Sensor Attributes:', attributes);
-    console.log('All OHME attributes:', Object.keys(attributes));
+    console.log('Charger Sensor Attributes:', attributes);
+    console.log('All sensor attributes:', Object.keys(attributes));
 
     // Try to find charge slot data in various possible attributes
     for (const attr of possibleAttributes) {
       if (attributes[attr]) {
         console.log(`Found attribute: ${attr}`, attributes[attr]);
         if (Array.isArray(attributes[attr])) {
-          slots.push(...attributes[attr]);
+          // Handle Octopus dispatches format
+          if (attr === 'dispatches' || attr === 'upcoming_dispatches' || attr === 'scheduled_dispatches') {
+            const dispatchSlots = this.parseOctopusDispatches(attributes[attr]);
+            slots.push(...dispatchSlots);
+          } else {
+            slots.push(...attributes[attr]);
+          }
         } else if (typeof attributes[attr] === 'object') {
           slots.push(attributes[attr]);
         }
@@ -192,6 +203,66 @@ class OctopusIntelligentWheelCard extends HTMLElement {
     
     console.log('Parsed OHME slots:', slots);
     return slots.length === 1 ? slots[0] : slots;
+  }
+
+  parseOctopusDispatches(dispatches) {
+    console.log('Parsing Octopus dispatches:', dispatches);
+    const slots = [];
+    
+    for (const dispatch of dispatches) {
+      // Octopus dispatches typically have start/end times and may have different field names
+      let start, end;
+      
+      // Try different possible field names for start time
+      if (dispatch.start) {
+        start = new Date(dispatch.start);
+      } else if (dispatch.start_time) {
+        start = new Date(dispatch.start_time);
+      } else if (dispatch.startTime) {
+        start = new Date(dispatch.startTime);
+      } else if (dispatch.from) {
+        start = new Date(dispatch.from);
+      } else if (dispatch.begin) {
+        start = new Date(dispatch.begin);
+      } else if (dispatch.dispatch_start) {
+        start = new Date(dispatch.dispatch_start);
+      }
+      
+      // Try different possible field names for end time
+      if (dispatch.end) {
+        end = new Date(dispatch.end);
+      } else if (dispatch.end_time) {
+        end = new Date(dispatch.end_time);
+      } else if (dispatch.endTime) {
+        end = new Date(dispatch.endTime);
+      } else if (dispatch.to) {
+        end = new Date(dispatch.to);
+      } else if (dispatch.finish) {
+        end = new Date(dispatch.finish);
+      } else if (dispatch.dispatch_end) {
+        end = new Date(dispatch.dispatch_end);
+      }
+      
+      // If we couldn't parse dates, skip this dispatch
+      if (!start || !end || isNaN(start.getTime()) || isNaN(end.getTime())) {
+        console.log('Could not parse dispatch dates:', dispatch);
+        continue;
+      }
+      
+      const duration = Math.round((end - start) / (1000 * 60)); // Duration in minutes
+      
+      slots.push({
+        start: start.toISOString(),
+        end: end.toISOString(),
+        duration,
+        price: dispatch.price || dispatch.cost || dispatch.rate || dispatch.tariff_rate || 0,
+        isActive: this.isSlotActive(start, end),
+        source: 'octopus_dispatch'
+      });
+    }
+    
+    console.log('Parsed Octopus dispatch slots:', slots);
+    return slots;
   }
 
   processSlots(slots) {

@@ -69,13 +69,23 @@ slot_duration: 30
 
 ## Entity Requirements
 
-The card expects your Octopus Intelligent entity to have attributes containing charge slot information. It will look for data in the following attributes:
+The card expects your charger entity to have attributes containing charge slot information. It will look for data in the following attributes:
 
+**Octopus Intelligent:**
 - `next_slot_start`
 - `next_slot_end`
 - `charge_slots`
 - `intelligent_slots`
 - `scheduled_slots`
+- `dispatches` (for Octopus dispatches entity)
+
+**Ohme Chargers:**
+- `slots`
+- `charge_schedule`
+- `scheduled_charges`
+- `upcoming_slots`
+- `next_charge`
+- `current_slot`
 
 ### Expected Data Format
 
@@ -95,6 +105,21 @@ The card can handle various data formats from different charger types:
     ],
     "intelligent_slots": [...],
     "scheduled_slots": [...]
+  }
+}
+```
+
+#### Octopus Dispatches Format
+```json
+{
+  "attributes": {
+    "dispatches": [
+      {
+        "start": "2024-01-15T02:00:00Z",
+        "end": "2024-01-15T04:00:00Z",
+        "price": 0.05
+      }
+    ]
   }
 }
 ```
