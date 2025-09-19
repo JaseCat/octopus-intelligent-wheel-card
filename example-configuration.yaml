@@ -1,0 +1,38 @@
+# Example configuration for Octopus Intelligent Wheel Card
+# Add this to your Home Assistant Lovelace dashboard
+
+type: custom:octopus-intelligent-wheel-card
+entity: sensor.octopus_intelligent_charger
+name: "EV Charging Schedule"
+wheel_size: 300
+show_slots: 24
+slot_duration: 30
+
+# Alternative configurations:
+
+# Basic configuration
+type: custom:octopus-intelligent-wheel-card
+entity: sensor.my_octopus_charger
+
+# With custom styling
+type: custom:octopus-intelligent-wheel-card
+entity: sensor.octopus_intelligent_charger
+name: "My EV Charger"
+wheel_size: 400
+show_slots: 12
+
+# For different entity types (adjust entity name as needed)
+type: custom:octopus-intelligent-wheel-card
+entity: sensor.octopus_go_charger
+name: "Octopus Go Charging"
+
+# Multiple cards for different chargers
+type: custom:octopus-intelligent-wheel-card
+entity: sensor.main_ev_charger
+name: "Main EV Charger"
+wheel_size: 250
+
+type: custom:octopus-intelligent-wheel-card
+entity: sensor.secondary_ev_charger
+name: "Secondary EV Charger"
+wheel_size: 250
