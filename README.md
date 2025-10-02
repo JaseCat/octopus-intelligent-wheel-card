@@ -327,18 +327,13 @@ If you encounter any issues or have questions:
 
 ## Changelog
 
-### Version 1.1.0
-- Added support for Zappi chargers
-- Added charger type auto-detection
-- Added `charger_type` configuration option
-- Enhanced debugging for different charger types
-- Improved compatibility with Octopus Intelligent dispatching
-
 ### Version 1.0.0
-- Initial release
-- Basic wheel card functionality
+- Initial release with full multi-charger support
 - Support for Octopus Intelligent charge slots
 - Support for Ohme charger schedules
+- Support for Zappi chargers with auto-detection
+- Added `charger_type` configuration option
+- Enhanced debugging for different charger types
 - Real-time updates
 - Customizable appearance
-- Multi-charger compatibility
+- Comprehensive documentation and examples

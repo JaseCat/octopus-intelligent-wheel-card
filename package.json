@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/your-username/octopus-intelligent-wheel-card.git"
+    "url": "git+https://github.com/JaseCat/octopus-intelligent-wheel-card.git"
   },
   "keywords": [
     "home-assistant",
@@ -17,12 +17,12 @@
     "ev-charging",
     "wheel-card"
   ],
-  "author": "Your Name",
+  "author": "JaseCat",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/your-username/octopus-intelligent-wheel-card/issues"
+    "url": "https://github.com/JaseCat/octopus-intelligent-wheel-card/issues"
   },
-  "homepage": "https://github.com/your-username/octopus-intelligent-wheel-card#readme",
+  "homepage": "https://github.com/JaseCat/octopus-intelligent-wheel-card#readme",
   "hacs": "1.0.0",
   "homeassistant": "2023.1.0"
 }
