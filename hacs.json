@@ -1,0 +1,6 @@
+{
+  "name": "Octopus Intelligent Wheel Card",
+  "content_in_root": true,
+  "filename": "octopus-intelligent-wheel-card.js",
+  "homeassistant": "2023.1.0"
+}

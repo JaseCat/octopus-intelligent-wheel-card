@@ -1,0 +1,28 @@
+{
+  "name": "octopus-intelligent-wheel-card",
+  "version": "1.0.0",
+  "description": "A wheel card for Home Assistant to display Octopus Intelligent charge slots",
+  "main": "octopus-intelligent-wheel-card.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/your-username/octopus-intelligent-wheel-card.git"
+  },
+  "keywords": [
+    "home-assistant",
+    "lovelace",
+    "octopus-energy",
+    "ev-charging",
+    "wheel-card"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/your-username/octopus-intelligent-wheel-card/issues"
+  },
+  "homepage": "https://github.com/your-username/octopus-intelligent-wheel-card#readme",
+  "hacs": "1.0.0",
+  "homeassistant": "2023.1.0"
+}

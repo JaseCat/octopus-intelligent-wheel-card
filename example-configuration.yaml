@@ -1,0 +1,63 @@
+# Example configuration for Octopus Intelligent Wheel Card
+# Add this to your Home Assistant Lovelace dashboard
+
+# For OHME chargers (default)
+type: custom:octopus-intelligent-wheel-card
+entity: sensor.octopus_intelligent_charger
+name: "EV Charging Schedule"
+wheel_size: 300
+show_slots: 24
+slot_duration: 30
+charger_type: "ohme"  # Optional: "ohme", "zappi", or "auto"
+
+# For Zappi chargers
+type: custom:octopus-intelligent-wheel-card
+entity: binary_sensor.octopus_energy_a_16ef720e_intelligent_dispatching
+name: "Zappi Charging Schedule"
+wheel_size: 300
+show_slots: 24
+slot_duration: 30
+charger_type: "zappi"  # Required for Zappi chargers
+
+# Auto-detect charger type (recommended)
+type: custom:octopus-intelligent-wheel-card
+entity: sensor.your_charger_entity
+name: "Auto-Detected Charger"
+wheel_size: 300
+show_slots: 24
+slot_duration: 30
+charger_type: "auto"  # Will automatically detect OHME or Zappi
+
+# Alternative configurations:
+
+# Basic configuration
+type: custom:octopus-intelligent-wheel-card
+entity: sensor.my_octopus_charger
+
+# With custom styling
+type: custom:octopus-intelligent-wheel-card
+entity: sensor.octopus_intelligent_charger
+name: "My EV Charger"
+wheel_size: 400
+show_slots: 12
+
+# For different entity types (adjust entity name as needed)
+type: custom:octopus-intelligent-wheel-card
+entity: sensor.octopus_go_charger
+name: "Octopus Go Charging"
+
+# For Octopus dispatches entity
+type: custom:octopus-intelligent-wheel-card
+entity: sensor.octopus_dispatches
+name: "Octopus Dispatches"
+
+# Multiple cards for different chargers
+type: custom:octopus-intelligent-wheel-card
+entity: sensor.main_ev_charger
+name: "Main EV Charger"
+wheel_size: 250
+
+type: custom:octopus-intelligent-wheel-card
+entity: sensor.secondary_ev_charger
+name: "Secondary EV Charger"
+wheel_size: 250
