@@ -1,3 +1,6 @@
+// Version information
+const VERSION = '1.0.0';
+
 class OctopusIntelligentWheelCard extends HTMLElement {
   constructor() {
     super();
@@ -1023,9 +1026,9 @@ window.customCards = window.customCards || [];
 window.customCards.push({
   type: 'octopus-intelligent-wheel-card',
   name: 'Octopus Intelligent Wheel Card',
-  description: 'A wheel card to display Octopus Intelligent charge slots',
+  description: 'A wheel card to display Octopus Intelligent charge slots with multi-charger support',
   preview: true,
-  documentationURL: 'https://github.com/your-username/octopus-intelligent-wheel-card'
+  documentationURL: 'https://github.com/JaseCat/octopus-intelligent-wheel-card'
 });
 
 // Debug function for testing OHME parsing
