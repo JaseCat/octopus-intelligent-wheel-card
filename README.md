@@ -19,17 +19,15 @@ A beautiful wheel-style card for Home Assistant that displays EV charging schedu
 
 ### Method 1: HACS (Recommended)
 
-1. Open HACS in Home Assistant
-2. Go to "Frontend" → "Explore & Download Repositories"
-3. Click the three dots menu (⋮) in the top right corner
-4. Select "Custom repositories"
-5. Add this repository:
+1. Go into HACS
+2. Click on the 3 dots (⋮)
+3. Select "Custom repositories"
+4. Add this repository:
    - **Repository**: `https://github.com/JaseCat/octopus-intelligent-wheel-card`
    - **Category**: `Frontend`
-6. Click "Add"
-7. Search for "Octopus Intelligent Wheel Card" in the main HACS interface
-8. Click "Download this repository with HACS"
-9. Restart Home Assistant
+5. Click "Add"
+6. Download the card
+7. Reboot Home Assistant
 
 ### Method 2: Manual Installation
 
