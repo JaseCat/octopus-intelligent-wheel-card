@@ -1,5 +1,5 @@
 // Version information
-const VERSION = '1.0.9';
+const VERSION = '1.0.10';
 
 class OctopusIntelligentWheelCard extends HTMLElement {
   constructor() {
@@ -487,6 +487,12 @@ class OctopusIntelligentWheelCard extends HTMLElement {
       } else {
         // For non-overnight schedules, check if the slot time has passed today
         const todaySlotTime = new Date(today.getFullYear(), today.getMonth(), today.getDate(), startHourNum, startMinNum, 0, 0);
+        
+        console.log(`  -> Time comparison debug:`);
+        console.log(`  -> now: ${now.toLocaleString()} (${now.getTime()})`);
+        console.log(`  -> todaySlotTime: ${todaySlotTime.toLocaleString()} (${todaySlotTime.getTime()})`);
+        console.log(`  -> now < todaySlotTime: ${now < todaySlotTime}`);
+        console.log(`  -> now > todaySlotTime: ${now > todaySlotTime}`);
         
         if (now < todaySlotTime) {
           // The slot time hasn't passed today, so it's for today
