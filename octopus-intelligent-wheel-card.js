@@ -1,5 +1,5 @@
 // Version information
-const VERSION = '1.0.6';
+const VERSION = '1.0.7';
 
 class OctopusIntelligentWheelCard extends HTMLElement {
   constructor() {
@@ -336,15 +336,20 @@ class OctopusIntelligentWheelCard extends HTMLElement {
     
     // First pass: parse all slots and determine the base date
     const now = new Date();
+    // Use local timezone for date calculations to avoid UTC issues
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
     
     console.log('=== DATE DEBUG ===');
     console.log('Current time (now):', now.toLocaleString());
-    console.log('Today date:', today.toLocaleDateString());
-    console.log('Tomorrow date:', tomorrow.toLocaleDateString());
+    console.log('Current time (UTC):', now.toISOString());
+    console.log('Today date (local):', today.toDateString());
+    console.log('Today date (UTC):', today.toISOString());
+    console.log('Tomorrow date (local):', tomorrow.toDateString());
+    console.log('Tomorrow date (UTC):', tomorrow.toISOString());
     console.log('Current hour:', now.getHours());
+    console.log('Current hour (UTC):', now.getUTCHours());
     console.log('==================');
     
     // Find the earliest slot time to determine the base date
@@ -403,12 +408,15 @@ class OctopusIntelligentWheelCard extends HTMLElement {
     });
     
     console.log('Date calculation debug:');
-    console.log('- now:', now.toISOString());
-    console.log('- today:', today.toISOString());
-    console.log('- tomorrow:', tomorrow.toISOString());
+    console.log('- now (local):', now.toLocaleString());
+    console.log('- now (UTC):', now.toISOString());
+    console.log('- today (local):', today.toDateString());
+    console.log('- today (UTC):', today.toISOString());
+    console.log('- tomorrow (local):', tomorrow.toDateString());
+    console.log('- tomorrow (UTC):', tomorrow.toISOString());
     console.log('- hasOvernightSlots:', hasOvernightSlots, 'hasEveningSlots:', hasEveningSlots, 'hasEarlyMorningSlots:', hasEarlyMorningSlots);
     console.log('- isOvernightSchedule:', isOvernightSchedule, 'earliestHour:', earliestHour);
-    console.log('- Current time:', now.toISOString(), 'Current hour:', now.getHours());
+    console.log('- Current hour (local):', now.getHours(), 'Current hour (UTC):', now.getUTCHours());
     
     // Second pass: create slots with individual date assignment
     for (const slotString of slotStrings) {
