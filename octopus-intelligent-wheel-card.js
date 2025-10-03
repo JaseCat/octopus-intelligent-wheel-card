@@ -1,5 +1,5 @@
 // Version information
-const VERSION = '1.0.12';
+const VERSION = '1.0.13';
 
 class OctopusIntelligentWheelCard extends HTMLElement {
   constructor() {
@@ -320,43 +320,23 @@ class OctopusIntelligentWheelCard extends HTMLElement {
       // Determine the correct date for this specific slot
       let slotDate = today;
       
-      // Improved date assignment logic for overnight schedules
-      if (isOvernightSchedule) {
-        // For overnight schedules, we need to be smarter about date assignment
-        // The key insight: if we're in the evening and see early morning slots, they're for tomorrow
-        // If we're in the early morning and see early morning slots, they could be today or tomorrow
+      // Improved date assignment logic
+      if (startHourNum >= 18) {
+        // Evening slots (18:00+) are always for today
+        slotDate = today;
+      } else if (startHourNum <= 6) {
+        // Early morning slots (00:00-06:00) need careful handling
+        const currentHour = now.getHours();
         
-        if (startHourNum >= 18) {
-          // Evening slots (18:00+) are always for today
-          slotDate = today;
-        } else if (startHourNum <= 6) {
-          // Early morning slots (00:00-06:00) need careful handling
-          const currentHour = now.getHours();
-          
-          if (currentHour >= 18) {
-            // If it's evening now (18:00+), early morning slots are definitely for tomorrow
-            slotDate = tomorrow;
-          } else if (currentHour <= 6) {
-            // If it's early morning now (00:00-06:00), we need to check if the slot time has passed today
-            const todaySlotTime = new Date(today.getFullYear(), today.getMonth(), today.getDate(), startHourNum, startMinNum, 0, 0);
-            
-            // For early morning slots, if we're in early morning and the slot time hasn't passed today, it's for today
-            // If the slot time has passed today, it must be for tomorrow
-            if (now < todaySlotTime) {
-              // The slot time hasn't passed today, so it's for today
-              slotDate = today;
-            } else {
-              // The slot time has passed today, so it must be for tomorrow
-              slotDate = tomorrow;
-            }
-          } else {
-            // It's mid-day (07:00-17:00), early morning slots are for tomorrow
-            slotDate = tomorrow;
-          }
-        } else {
-          // Mid-day slots (07:00-17:00) - check if they've passed today
+        if (currentHour >= 18) {
+          // If it's evening now (18:00+), early morning slots are definitely for tomorrow
+          slotDate = tomorrow;
+        } else if (currentHour <= 6) {
+          // If it's early morning now (00:00-06:00), we need to check if the slot time has passed today
           const todaySlotTime = new Date(today.getFullYear(), today.getMonth(), today.getDate(), startHourNum, startMinNum, 0, 0);
           
+          // For early morning slots, if we're in early morning and the slot time hasn't passed today, it's for today
+          // If the slot time has passed today, it must be for tomorrow
           if (now < todaySlotTime) {
             // The slot time hasn't passed today, so it's for today
             slotDate = today;
@@ -364,9 +344,12 @@ class OctopusIntelligentWheelCard extends HTMLElement {
             // The slot time has passed today, so it must be for tomorrow
             slotDate = tomorrow;
           }
+        } else {
+          // It's mid-day (07:00-17:00), early morning slots are for tomorrow
+          slotDate = tomorrow;
         }
       } else {
-        // For non-overnight schedules, check if the slot time has passed today
+        // Mid-day slots (07:00-17:00) - check if they've passed today
         const todaySlotTime = new Date(today.getFullYear(), today.getMonth(), today.getDate(), startHourNum, startMinNum, 0, 0);
         
         if (now < todaySlotTime) {
