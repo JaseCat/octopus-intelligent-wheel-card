@@ -1,5 +1,5 @@
 // Version information
-const VERSION = '1.0.8';
+const VERSION = '1.0.9';
 
 class OctopusIntelligentWheelCard extends HTMLElement {
   constructor() {
@@ -337,10 +337,14 @@ class OctopusIntelligentWheelCard extends HTMLElement {
     // First pass: parse all slots and determine the base date
     const now = new Date();
     // Use local timezone for date calculations to avoid UTC issues
-    // Create today at local midnight (00:00:00)
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+    // Create today at local midnight (00:00:00) - this should be local time, not UTC
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    // Force local timezone by setting time to midnight
+    today.setHours(0, 0, 0, 0);
+    tomorrow.setHours(0, 0, 0, 0);
     
     console.log('=== DATE DEBUG ===');
     console.log('Current time (now):', now.toLocaleString());
@@ -459,6 +463,8 @@ class OctopusIntelligentWheelCard extends HTMLElement {
             // If it's early morning now (00:00-06:00), we need to check if the slot time has passed today
             const todaySlotTime = new Date(today.getFullYear(), today.getMonth(), today.getDate(), startHourNum, startMinNum, 0, 0);
             
+            // For early morning slots, if we're in early morning and the slot time hasn't passed today, it's for today
+            // If the slot time has passed today, it must be for tomorrow
             if (now < todaySlotTime) {
               // The slot time hasn't passed today, so it's for today
               slotDate = today;
@@ -479,9 +485,18 @@ class OctopusIntelligentWheelCard extends HTMLElement {
           console.log(`  -> Mid-day slot (${startHourNum}:${startMin}), assigning to today`);
         }
       } else {
-        // For non-overnight schedules, all slots are for today
-        slotDate = today;
-        console.log(`  -> Non-overnight slot (${startHourNum}:${startMin}), assigning to today`);
+        // For non-overnight schedules, check if the slot time has passed today
+        const todaySlotTime = new Date(today.getFullYear(), today.getMonth(), today.getDate(), startHourNum, startMinNum, 0, 0);
+        
+        if (now < todaySlotTime) {
+          // The slot time hasn't passed today, so it's for today
+          slotDate = today;
+          console.log(`  -> Non-overnight slot (${startHourNum}:${startMin}), slot hasn't passed today, assigning to today`);
+        } else {
+          // The slot time has passed today, so it must be for tomorrow
+          slotDate = tomorrow;
+          console.log(`  -> Non-overnight slot (${startHourNum}:${startMin}), slot has passed today, assigning to tomorrow`);
+        }
       }
       
       // Create start and end times using the determined date
