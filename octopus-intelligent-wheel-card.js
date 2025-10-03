@@ -340,12 +340,6 @@ class OctopusIntelligentWheelCard extends HTMLElement {
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
     
-    console.log('=== DATE DEBUG ===');
-    console.log('Current time (now):', now.toLocaleString());
-    console.log('Today date:', today.toLocaleDateString());
-    console.log('Tomorrow date:', tomorrow.toLocaleDateString());
-    console.log('Current hour:', now.getHours());
-    console.log('==================');
     
     // Find the earliest slot time to determine the base date
     let earliestHour = 23;
@@ -502,9 +496,6 @@ class OctopusIntelligentWheelCard extends HTMLElement {
       console.log(`Is active: ${slot.isActive}`);
       console.log(`Is past: ${this.isSlotPast(start)}`);
       console.log(`Current time: ${now.toLocaleString()}`);
-      console.log(`Time comparison: now=${now.getTime()}, start=${start.getTime()}, end=${end.getTime()}`);
-      console.log(`Start is in future: ${now < start}`);
-      console.log(`End is in future: ${now < end}`);
       console.log(`===================`);
       
       slots.push(slot);
