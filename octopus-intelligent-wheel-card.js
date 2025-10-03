@@ -1,5 +1,5 @@
 // Version information
-const VERSION = '1.0.7';
+const VERSION = '1.0.8';
 
 class OctopusIntelligentWheelCard extends HTMLElement {
   constructor() {
@@ -337,7 +337,8 @@ class OctopusIntelligentWheelCard extends HTMLElement {
     // First pass: parse all slots and determine the base date
     const now = new Date();
     // Use local timezone for date calculations to avoid UTC issues
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    // Create today at local midnight (00:00:00)
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
     
@@ -456,7 +457,7 @@ class OctopusIntelligentWheelCard extends HTMLElement {
             console.log(`  -> Early morning slot (${startHourNum}:${startMin}), evening now (${currentHour}:00), assigning to tomorrow`);
           } else if (currentHour <= 6) {
             // If it's early morning now (00:00-06:00), we need to check if the slot time has passed today
-            const todaySlotTime = new Date(today.getTime() + (startHourNum * 60 + startMinNum) * 60000);
+            const todaySlotTime = new Date(today.getFullYear(), today.getMonth(), today.getDate(), startHourNum, startMinNum, 0, 0);
             
             if (now < todaySlotTime) {
               // The slot time hasn't passed today, so it's for today
@@ -484,8 +485,9 @@ class OctopusIntelligentWheelCard extends HTMLElement {
       }
       
       // Create start and end times using the determined date
-      const start = new Date(slotDate.getTime() + (startHourNum * 60 + startMinNum) * 60000);
-      const end = new Date(slotDate.getTime() + (endHourNum * 60 + endMinNum) * 60000);
+      // Ensure we're using the correct date by creating new Date objects with explicit date components
+      const start = new Date(slotDate.getFullYear(), slotDate.getMonth(), slotDate.getDate(), startHourNum, startMinNum, 0, 0);
+      const end = new Date(slotDate.getFullYear(), slotDate.getMonth(), slotDate.getDate(), endHourNum, endMinNum, 0, 0);
       
       // Handle overnight slots - if end time is before start time, it spans to next day
       if (end <= start) {

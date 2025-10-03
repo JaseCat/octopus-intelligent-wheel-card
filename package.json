@@ -1,6 +1,6 @@
 {
   "name": "octopus-intelligent-wheel-card",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "A wheel card for Home Assistant to display Octopus Intelligent charge slots",
   "main": "octopus-intelligent-wheel-card.js",
   "scripts": {
