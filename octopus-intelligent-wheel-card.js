@@ -421,30 +421,44 @@ class OctopusIntelligentWheelCard extends HTMLElement {
       // Determine the correct date for this specific slot
       let slotDate = today;
       
-      // Simplified date assignment logic
+      // Improved date assignment logic for overnight schedules
       if (isOvernightSchedule) {
-        // For overnight schedules, use a simpler approach:
-        // - Evening slots (18:00+) are for today
-        // - Early morning slots (00:00-06:00) are for tomorrow if we're in the evening, otherwise today
-        // - Mid-day slots (06:00-18:00) are for today
+        // For overnight schedules, we need to be smarter about date assignment
+        // The key insight: if we're in the evening and see early morning slots, they're for tomorrow
+        // If we're in the early morning and see early morning slots, they could be today or tomorrow
         
         if (startHourNum >= 18) {
-          // Evening slots are for today
+          // Evening slots (18:00+) are always for today
           slotDate = today;
           console.log(`  -> Evening slot (${startHourNum}:${startMin}), assigning to today`);
         } else if (startHourNum <= 6) {
-          // Early morning slots
-          if (now.getHours() >= 18) {
-            // If it's evening now, early morning slots are for tomorrow
+          // Early morning slots (00:00-06:00) need careful handling
+          const currentHour = now.getHours();
+          
+          if (currentHour >= 18) {
+            // If it's evening now (18:00+), early morning slots are definitely for tomorrow
             slotDate = tomorrow;
-            console.log(`  -> Early morning slot (${startHourNum}:${startMin}), evening now, assigning to tomorrow`);
+            console.log(`  -> Early morning slot (${startHourNum}:${startMin}), evening now (${currentHour}:00), assigning to tomorrow`);
+          } else if (currentHour <= 6) {
+            // If it's early morning now (00:00-06:00), we need to check if the slot time has passed today
+            const todaySlotTime = new Date(today.getTime() + (startHourNum * 60 + startMinNum) * 60000);
+            
+            if (now < todaySlotTime) {
+              // The slot time hasn't passed today, so it's for today
+              slotDate = today;
+              console.log(`  -> Early morning slot (${startHourNum}:${startMin}), early morning now, slot hasn't passed today, assigning to today`);
+            } else {
+              // The slot time has passed today, so it must be for tomorrow
+              slotDate = tomorrow;
+              console.log(`  -> Early morning slot (${startHourNum}:${startMin}), early morning now, slot has passed today, assigning to tomorrow`);
+            }
           } else {
-            // If it's early morning now, these slots are for today
-            slotDate = today;
-            console.log(`  -> Early morning slot (${startHourNum}:${startMin}), early morning now, assigning to today`);
+            // It's mid-day (07:00-17:00), early morning slots are for tomorrow
+            slotDate = tomorrow;
+            console.log(`  -> Early morning slot (${startHourNum}:${startMin}), mid-day now (${currentHour}:00), assigning to tomorrow`);
           }
         } else {
-          // Mid-day slots are for today
+          // Mid-day slots (07:00-17:00) are for today
           slotDate = today;
           console.log(`  -> Mid-day slot (${startHourNum}:${startMin}), assigning to today`);
         }
