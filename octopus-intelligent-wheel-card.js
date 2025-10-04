@@ -1,5 +1,5 @@
 // Version information
-const VERSION = '1.0.14';
+const VERSION = '1.0.15';
 
 class OctopusIntelligentWheelCard extends HTMLElement {
   constructor() {
@@ -349,16 +349,9 @@ class OctopusIntelligentWheelCard extends HTMLElement {
           slotDate = tomorrow;
         }
       } else {
-        // Mid-day slots (07:00-17:00) - check if the slot end time has passed today
-        const todaySlotEndTime = new Date(today.getFullYear(), today.getMonth(), today.getDate(), endHourNum, endMinNum, 0, 0);
-        
-        if (now < todaySlotEndTime) {
-          // The slot end time hasn't passed today, so it's for today
-          slotDate = today;
-        } else {
-          // The slot end time has passed today, so it must be for tomorrow
-          slotDate = tomorrow;
-        }
+        // Mid-day slots (07:00-17:00) - always assign to today
+        // The status will be determined by the time comparison in renderSlotsInfo
+        slotDate = today;
       }
       
       // Create start and end times using the determined date
