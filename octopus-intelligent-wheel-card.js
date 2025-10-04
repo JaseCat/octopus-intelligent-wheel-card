@@ -1,5 +1,5 @@
 // Version information
-const VERSION = '1.0.15';
+const VERSION = '1.0.16';
 
 class OctopusIntelligentWheelCard extends HTMLElement {
   constructor() {
@@ -771,18 +771,24 @@ class OctopusIntelligentWheelCard extends HTMLElement {
     // Sort slots by start time to ensure first slot shows first
     const sortedSlots = [...this.chargeSlots].sort((a, b) => new Date(a.start) - new Date(b.start));
     
-    return sortedSlots.slice(0, 6).map(slot => {
+    // Filter out past slots that have already ended
+    const now = new Date();
+    const futureAndActiveSlots = sortedSlots.filter(slot => {
+      const end = new Date(slot.end);
+      return end > now; // Only show slots that haven't ended yet
+    });
+    
+    return futureAndActiveSlots.slice(0, 6).map(slot => {
       const start = new Date(slot.start);
       const end = new Date(slot.end);
-      const now = new Date();
       
       let className = 'slot-info';
       let status = '';
       let icon = '';
       
-      // Better status detection
-      
-      if (slot.isActive) {
+      // Improved status detection - since we've already filtered out past slots
+      if (slot.isActive || (now >= start && now <= end)) {
+        // Slot is currently active
         className += ' active';
         status = 'Active';
         icon = '⚡';
@@ -791,16 +797,11 @@ class OctopusIntelligentWheelCard extends HTMLElement {
         className += ' scheduled';
         status = 'Scheduled';
         icon = '⏰';
-      } else if (now > end) {
-        // Slot has finished
-        className += ' past';
-        status = 'Past';
-        icon = '✅';
       } else {
-        // Slot is currently running (fallback)
-        className += ' active';
-        status = 'Active';
-        icon = '⚡';
+        // Fallback - should not happen due to filtering, but just in case
+        className += ' scheduled';
+        status = 'Scheduled';
+        icon = '⏰';
       }
       
       return `
