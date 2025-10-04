@@ -1,5 +1,5 @@
 // Version information
-const VERSION = '1.0.13';
+const VERSION = '1.0.14';
 
 class OctopusIntelligentWheelCard extends HTMLElement {
   constructor() {
@@ -349,14 +349,14 @@ class OctopusIntelligentWheelCard extends HTMLElement {
           slotDate = tomorrow;
         }
       } else {
-        // Mid-day slots (07:00-17:00) - check if they've passed today
-        const todaySlotTime = new Date(today.getFullYear(), today.getMonth(), today.getDate(), startHourNum, startMinNum, 0, 0);
+        // Mid-day slots (07:00-17:00) - check if the slot end time has passed today
+        const todaySlotEndTime = new Date(today.getFullYear(), today.getMonth(), today.getDate(), endHourNum, endMinNum, 0, 0);
         
-        if (now < todaySlotTime) {
-          // The slot time hasn't passed today, so it's for today
+        if (now < todaySlotEndTime) {
+          // The slot end time hasn't passed today, so it's for today
           slotDate = today;
         } else {
-          // The slot time has passed today, so it must be for tomorrow
+          // The slot end time has passed today, so it must be for tomorrow
           slotDate = tomorrow;
         }
       }
@@ -494,14 +494,14 @@ class OctopusIntelligentWheelCard extends HTMLElement {
   }
 
   isSlotActive(start, end) {
-    const now = this.currentTime;
+    const now = new Date();
     const startTime = new Date(start);
     const endTime = new Date(end);
     return now >= startTime && now <= endTime;
   }
   
   isSlotPast(start) {
-    const now = this.currentTime;
+    const now = new Date();
     const startTime = new Date(start);
     return now > startTime;
   }
@@ -701,7 +701,7 @@ class OctopusIntelligentWheelCard extends HTMLElement {
   }
 
   renderWheel() {
-    const now = this.currentTime;
+    const now = new Date();
     const slots = this.chargeSlots.slice(0, this.config.show_slots);
     
     // Render hour markers first
@@ -781,7 +781,7 @@ class OctopusIntelligentWheelCard extends HTMLElement {
     return sortedSlots.slice(0, 6).map(slot => {
       const start = new Date(slot.start);
       const end = new Date(slot.end);
-      const now = this.currentTime;
+      const now = new Date();
       
       let className = 'slot-info';
       let status = '';
