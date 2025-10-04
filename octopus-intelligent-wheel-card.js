@@ -1,5 +1,5 @@
 // Version information
-const VERSION = '1.0.16';
+const VERSION = '1.0.17';
 
 class OctopusIntelligentWheelCard extends HTMLElement {
   constructor() {
@@ -686,7 +686,7 @@ class OctopusIntelligentWheelCard extends HTMLElement {
           </div>
           <div class="legend-item">
             <div class="legend-color past"></div>
-            <span>Past</span>
+            <span>Completed</span>
           </div>
         </div>
       </div>
@@ -771,14 +771,21 @@ class OctopusIntelligentWheelCard extends HTMLElement {
     // Sort slots by start time to ensure first slot shows first
     const sortedSlots = [...this.chargeSlots].sort((a, b) => new Date(a.start) - new Date(b.start));
     
-    // Filter out past slots that have already ended
+    // Filter slots - show recent past slots (within last 2 hours) and all future/active slots
     const now = new Date();
-    const futureAndActiveSlots = sortedSlots.filter(slot => {
+    const twoHoursAgo = new Date(now.getTime() - (2 * 60 * 60 * 1000)); // 2 hours ago
+    
+    const relevantSlots = sortedSlots.filter(slot => {
       const end = new Date(slot.end);
-      return end > now; // Only show slots that haven't ended yet
+      const start = new Date(slot.start);
+      
+      // Show slots that:
+      // 1. Haven't ended yet (future/active), OR
+      // 2. Ended within the last 2 hours (recent past)
+      return end > twoHoursAgo;
     });
     
-    return futureAndActiveSlots.slice(0, 6).map(slot => {
+    return relevantSlots.slice(0, 6).map(slot => {
       const start = new Date(slot.start);
       const end = new Date(slot.end);
       
@@ -786,7 +793,7 @@ class OctopusIntelligentWheelCard extends HTMLElement {
       let status = '';
       let icon = '';
       
-      // Improved status detection - since we've already filtered out past slots
+      // Improved status detection - handle active, scheduled, and recent past slots
       if (slot.isActive || (now >= start && now <= end)) {
         // Slot is currently active
         className += ' active';
@@ -797,8 +804,13 @@ class OctopusIntelligentWheelCard extends HTMLElement {
         className += ' scheduled';
         status = 'Scheduled';
         icon = '⏰';
+      } else if (now > end) {
+        // Slot has finished (recent past - within last 2 hours)
+        className += ' past';
+        status = 'Completed';
+        icon = '✅';
       } else {
-        // Fallback - should not happen due to filtering, but just in case
+        // Fallback - should not happen, but just in case
         className += ' scheduled';
         status = 'Scheduled';
         icon = '⏰';
