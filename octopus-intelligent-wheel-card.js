@@ -1,5 +1,5 @@
 // Version information
-const VERSION = '1.0.17';
+const VERSION = '1.0.21';
 
 class OctopusIntelligentWheelCard extends HTMLElement {
   constructor() {
@@ -771,18 +771,16 @@ class OctopusIntelligentWheelCard extends HTMLElement {
     // Sort slots by start time to ensure first slot shows first
     const sortedSlots = [...this.chargeSlots].sort((a, b) => new Date(a.start) - new Date(b.start));
     
-    // Filter slots - show recent past slots (within last 2 hours) and all future/active slots
+    // Filter slots - show recent past slots (within last 6 hours) and all future/active slots
     const now = new Date();
-    const twoHoursAgo = new Date(now.getTime() - (2 * 60 * 60 * 1000)); // 2 hours ago
+    const sixHoursAgo = new Date(now.getTime() - (6 * 60 * 60 * 1000)); // 6 hours ago
     
     const relevantSlots = sortedSlots.filter(slot => {
       const end = new Date(slot.end);
-      const start = new Date(slot.start);
-      
       // Show slots that:
       // 1. Haven't ended yet (future/active), OR
-      // 2. Ended within the last 2 hours (recent past)
-      return end > twoHoursAgo;
+      // 2. Ended within the last 6 hours (recent past)
+      return end > sixHoursAgo;
     });
     
     return relevantSlots.slice(0, 6).map(slot => {
@@ -794,21 +792,26 @@ class OctopusIntelligentWheelCard extends HTMLElement {
       let icon = '';
       
       // Improved status detection - handle active, scheduled, and recent past slots
-      if (slot.isActive || (now >= start && now <= end)) {
+      // Use more precise time comparisons
+      const nowTime = now.getTime();
+      const startTime = start.getTime();
+      const endTime = end.getTime();
+      
+      if (slot.isActive || (nowTime >= startTime && nowTime <= endTime)) {
         // Slot is currently active
         className += ' active';
         status = 'Active';
         icon = '⚡';
-      } else if (now < start) {
-        // Slot hasn't started yet
-        className += ' scheduled';
-        status = 'Scheduled';
-        icon = '⏰';
-      } else if (now > end) {
+      } else if (nowTime > endTime) {
         // Slot has finished (recent past - within last 2 hours)
         className += ' past';
         status = 'Completed';
         icon = '✅';
+      } else if (nowTime < startTime) {
+        // Slot hasn't started yet
+        className += ' scheduled';
+        status = 'Scheduled';
+        icon = '⏰';
       } else {
         // Fallback - should not happen, but just in case
         className += ' scheduled';
